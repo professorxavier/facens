@@ -1,1 +1,3 @@
-# projeto-upx4-nomedoprojeto
+# Projeto <nome do projeto>
+
+O projeto NOME-DO-PROJETO consiste em um sistema mobile que será usado para ...
