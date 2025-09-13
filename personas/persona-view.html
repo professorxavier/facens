@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Persona</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        [contenteditable="true"] {
+            outline: 1px dashed #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+        }
+        [contenteditable="true"]:hover {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Container principal que será exportado -->
+    <div id="persona-card" class="bg-white rounded-2xl shadow-xl overflow-hidden max-w-2xl w-full p-6 sm:p-8 md:p-10">
+
+        <!-- Header e Foto da Persona -->
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+            <div class="flex-shrink-0 w-32 h-32 md:w-40 md:h-40 relative">
+                <img id="persona-photo" src="https://placehold.co/160x160/2563eb/ffffff?text=Ana" alt="Foto da Persona" class="rounded-full w-full h-full object-cover border-4 border-indigo-600 shadow-md">
+                <input type="file" id="photo-input" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+            </div>
+            <div class="text-center sm:text-left">
+                <h1 id="persona-name" class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight" contenteditable="true">Ana Paula</h1>
+                <p id="persona-age" class="text-xl text-gray-600 mt-1" contenteditable="true">32 anos</p>
+                <p id="persona-occupation" class="text-lg text-gray-500 mt-1" contenteditable="true">Gerente de Marketing</p>
+            </div>
+        </div>
+
+        <!-- Informações Detalhadas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            <!-- Gênero e Localização -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Detalhes Pessoais</h2>
+                <p class="text-gray-800"><span class="font-bold">Gênero:</span> <span contenteditable="true">Feminino</span></p>
+                <p class="text-gray-800"><span class="font-bold">Localização:</span> <span contenteditable="true">São Paulo, SP</span></p>
+            </div>
+
+            <!-- O que faz -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">O que faz</h2>
+                <p class="text-gray-800" contenteditable="true">Responsável por planejar e executar campanhas de marketing digital para uma startup de tecnologia, gerindo equipes e orçamentos.</p>
+            </div>
+            
+            <!-- Maiores Desafios -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Maiores Desafios</h2>
+                <ul class="list-disc list-inside text-gray-800 space-y-1">
+                    <li contenteditable="true">Falta de tempo para preparar refeições saudáveis.</li>
+                    <li contenteditable="true">Dificuldade em manter uma rotina de exercícios físicos.</li>
+                    <li contenteditable="true">Equilibrar a vida profissional e pessoal.</li>
+                </ul>
+            </div>
+
+            <!-- Objetivos -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Objetivos</h2>
+                <ul class="list-disc list-inside text-gray-800 space-y-1">
+                    <li contenteditable="true">Crescer na carreira e se tornar diretora.</li>
+                    <li contenteditable="true">Melhorar a qualidade de vida e ter mais energia.</li>
+                    <li contenteditable="true">Viajar e conhecer novas culturas.</li>
+                </ul>
+            </div>
+            
+            <!-- Citação -->
+            <div class="col-span-1 sm:col-span-2 bg-indigo-50 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+                <h2 class="text-sm font-semibold text-indigo-800 uppercase tracking-wider mb-4">Citação</h2>
+                <p id="persona-quote" class="text-xl md:text-2xl font-semibold text-indigo-900 leading-relaxed italic" contenteditable="true">
+                    "Preciso de algo que simplifique minha vida, sem comprometer minha saúde e bem-estar."
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Botão de Exportar -->
+        <div class="text-center mt-8">
+            <button id="export-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300">
+                Exportar para PNG
+            </button>
+        </div>
+    </div>
+
+    <!-- Script para funcionalidade de exportação e edição -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        const photoInput = document.getElementById('photo-input');
+        const personaPhoto = document.getElementById('persona-photo');
+        const exportBtn = document.getElementById('export-btn');
+        const personaCard = document.getElementById('persona-card');
+
+        // Pré-visualização da foto
+        photoInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    personaPhoto.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Exportar como PNG
+        exportBtn.addEventListener('click', function() {
+            // Esconder o botão de exportar para que ele não apareça na imagem
+            exportBtn.style.display = 'none';
+
+            // Usar html2canvas para capturar a div
+            html2canvas(personaCard, {
+                useCORS: true,
+                scale: 2 // Aumenta a resolução para uma imagem mais nítida
+            }).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = 'persona-perfil.png';
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Voltar a exibir o botão
+                exportBtn.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
